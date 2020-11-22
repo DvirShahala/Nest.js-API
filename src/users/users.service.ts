@@ -12,7 +12,6 @@ export class UsersService {
     private users: User[] = [];
 
     async createUser(user: UserDto): Promise<User> {
-        console.log("helloooooooooooooooooooooooooooooooooooooooooo");
         return await this.userRepository.create<User>(user);
     }
 

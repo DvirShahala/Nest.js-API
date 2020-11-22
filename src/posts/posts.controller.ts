@@ -29,22 +29,22 @@ export class PostsController {
         return post;
     }
 
-    //@UseGuards(JwtStrategy)
-    //@UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Post()
-    async create(@Body() post: PostDto, @Headers() token): Promise<PostEntity> {
+    async create(@Body() post: PostDto, @Request() req): Promise<PostEntity> {
+        console.log("req.user");
+        console.log(req.user);
         // create a new post and return the newly created post
-        return await this.postService.create(post, token.authorization);
+        return await this.postService.create(post, req.user.id);
     }
 
-    //@UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async update(@Param('id') id: number, @Body() post: PostDto, @Request() req): Promise<PostEntity> {
         // get the number of row affected and the updated post
         const { numberOfAffectedRows, updatedPost } = await this.postService.update(id, post, req.user.id);
 
-        // if the number of row affected is zero, 
-        // it means the post doesn't exist in our db
+        // if the number of row affected is zero, it means the post doesn't exist in our db
         if (numberOfAffectedRows === 0) {
             throw new NotFoundException('This Post doesn\'t exist');
         }
@@ -68,4 +68,5 @@ export class PostsController {
         // return success message
         return 'Successfully deleted';
     }
+
 }
