@@ -42,7 +42,7 @@ export class PostsController {
     @Put(':id')
     async update(@Param('id') id: number, @Body() post: PostDto, @Request() req): Promise<PostEntity> {
         // get the number of row affected and the updated post
-        const { numberOfAffectedRows, updatedPost } = await this.postService.update(id, post, req.user.id);
+        const { numberOfAffectedRows, postUpdated } = await this.postService.update(id, post, req.user.id);
 
         // if the number of row affected is zero, it means the post doesn't exist in our db
         if (numberOfAffectedRows === 0) {
@@ -50,7 +50,7 @@ export class PostsController {
         }
 
         // return the updated post
-        return updatedPost;
+         return postUpdated;
     }
 
     @UseGuards(AuthGuard('jwt'))

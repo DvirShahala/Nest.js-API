@@ -36,9 +36,13 @@ export class PostsService {
   }
 
   async update(id, data, userId) {
-    console.log(id, data, userId);
-    const [numberOfAffectedRows, [updatedPost]] = await this.postRepository.update({ ...data }, { where: { id, userId } });
-    return { numberOfAffectedRows, updatedPost };
+    const [numberOfAffectedRows] = await this.postRepository.update({ ...data }, { where: { id, userId }});
+    const postUpdated = await this.postRepository.findOne({
+      where: { id, userId },
+      include: [{ model: User, attributes: { exclude: ['password'] } }],
+    });
+    console.log(postUpdated);
+    return { numberOfAffectedRows, postUpdated };
   }
 
 }
