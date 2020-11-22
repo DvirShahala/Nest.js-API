@@ -11,21 +11,21 @@ export class PostsController {
 
     @Get()
     async findAll() {
-        // get all posts in the db - 10 times per get
+        // Get all posts in the db - 10 times per get
         return await this.postService.findAll();
     }
 
     @Get(':id')
     async findOne(@Param('id') userId: number): Promise<PostEntity> {
-        // find the post with this userId
+        // Find the post with this userId
         const post = await this.postService.findOneByUserId(userId);
 
-        // if the userId doesn't exit in the db, throw a 404 error
+        // If the userId doesn't exit in the db, throw a 404 error
         if (!post) {
             throw new NotFoundException('This userId doesn\'t exist');
         }
 
-        // if userId exist, return the post
+        // If userId exist, return the post
         return post;
     }
 
@@ -34,39 +34,38 @@ export class PostsController {
     async create(@Body() post: PostDto, @Request() req): Promise<PostEntity> {
         console.log("req.user");
         console.log(req.user);
-        // create a new post and return the newly created post
+        // Create a new post and return the newly created post
         return await this.postService.create(post, req.user.id);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async update(@Param('id') id: number, @Body() post: PostDto, @Request() req): Promise<PostEntity> {
-        // get the number of row affected and the updated post
+        // Get the number of row affected and the updated post
         const { numberOfAffectedRows, postUpdated } = await this.postService.update(id, post, req.user.id);
 
-        // if the number of row affected is zero, it means the post doesn't exist in our db
+        // If the number of row affected is zero, it means the post doesn't exist in our db
         if (numberOfAffectedRows === 0) {
             throw new NotFoundException('This Post doesn\'t exist');
         }
 
-        // return the updated post
+        // Return the updated post
          return postUpdated;
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     async remove(@Param('id') id: number, @Request() req) {
-        // delete the post with this id
+        // Delete the post with this id
         const deleted = await this.postService.delete(id, req.user.id);
 
-        // if the number of row affected is zero, 
+        // If the number of row affected is zero, 
         // then the post doesn't exist in our db
         if (deleted === 0) {
             throw new NotFoundException('This Post doesn\'t exist');
         }
 
-        // return success message
+        // Return success message
         return 'Successfully deleted';
     }
-
 }

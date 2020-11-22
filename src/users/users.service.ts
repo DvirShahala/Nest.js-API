@@ -11,14 +11,17 @@ export class UsersService {
 
     private users: User[] = [];
 
+    // Create user
     async createUser(user: UserDto): Promise<User> {
         return await this.userRepository.create<User>(user);
     }
 
+    // Find user by username
     async findOneByUserName(userName: string): Promise<User> {
         return await this.userRepository.findOne<User>({ where: { userName } });
     }
 
+    // Find user by email
     async findOneByEmail(email: string): Promise<User> {
         return await this.userRepository.findOne<User>({ where: { email } });
     }

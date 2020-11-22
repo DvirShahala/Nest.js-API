@@ -5,13 +5,15 @@ import { DoesUserExist } from '../core/guards/doesUserExist.guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) { }
 
+    // Login User
     @Post('login')
     async login(@Body() userNameAndPass) {
         return await this.authService.login(userNameAndPass);
     }
 
+    // Signup new user
     @UseGuards(DoesUserExist)
     @Post('signup')
     async signUp(@Body() user: UserDto) {
