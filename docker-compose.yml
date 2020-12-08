@@ -1,0 +1,36 @@
+version: '3'
+services:
+
+  mysql-db:
+    image: "mysql:8.0"
+    container_name: mysql-db
+    command: --init-file /app/api/mysql/init.sql
+    volumes:
+      - app-volume:/app/api/mysql
+      - ./init.sql:/app/api/mysql/init.sql
+    ports:
+      - 3307:3306
+    expose:
+      - '3306'
+    environment:
+      MYSQL_USER: 'root'
+      MYSQL_ROOT_PASSWORD: 123456
+
+  nest-api:
+    image: "node:12-alpine"
+    container_name: nest-api
+    working_dir: /app/api/nest
+    volumes:
+      - app-volume:/app/api
+      - .:/app/api/nest
+      - /app/api/nest/node_modules
+    env_file: 
+      - .env
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql-db
+    command: npm run start 
+
+volumes:
+  app-volume:
